@@ -7,19 +7,25 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        src = import ./src.nix;
         pkgs = import nixpkgs { inherit system; };
+        corepack = import ./corepack.nix { inherit pkgs; };
+        fixedCorepack = corepack.fixedCorepack src.archive;
       in rec {
-        packages.corepack = import ./corepack.nix { inherit pkgs; };
-        packages.yarn = packages.corepack.overrideAttrs (finalAttrs: prevAttrs: {
+        packages.corepack = corepack.projectSpecCorepack;
+        packages.yarn = fixedCorepack.overrideAttrs (finalAttrs: prevAttrs: {
           name = "yarn";
+          version = src.yarn.version;
           meta.mainProgram = "yarn";
         });
-        packages.pnpm = packages.corepack.overrideAttrs (finalAttrs: prevAttrs: {
+        packages.pnpm = fixedCorepack.overrideAttrs (finalAttrs: prevAttrs: {
           name = "pnpm";
+          version = src.pnpm.version;
           meta.mainProgram = "pnpm";
         });
-        packages.pnpx = packages.corepack.overrideAttrs (finalAttrs: prevAttrs: {
+        packages.pnpx = fixedCorepack.overrideAttrs (finalAttrs: prevAttrs: {
           name = "pnpx";
+          version = src.pnpm.version;
           meta.mainProgram = "pnpx";
         });
 
