@@ -27,7 +27,7 @@ $ nix run github:alexghr/corepack.nix#yarn -- --version
 1.22.19
 ```
 
-Use these for one-off commands that you might need to run. This are fixed
+Use these for one-off commands that you might need to run. These are fixed
 versions of package managers and won't respect the `packageManager` field in
 `package.json`.
 
