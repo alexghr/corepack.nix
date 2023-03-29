@@ -4,7 +4,7 @@
 
 ## Enable all package managers
 
-Install the `corepack` package (also the default package) will enable all of the Node.js package managers that Corepack knows about. These will be their respective latest version when the package was last built.
+Install the `corepack` package will enable all of the Node.js package managers that Corepack knows about. These will be their respective latest version when the package was last built.
 
 ```bash
 $ nix shell github:alexghr/corepack.nix
@@ -16,36 +16,50 @@ $ command -v pnpx
 /nix/store/2h6r0rj0rqqcpsw1zad5hm7f4fz5y075-corepack/bin/pnpx
 ```
 
-## Enable a specific package manager
+## Running one-off package manager commands
 
 This repo exports each Node.js package manager as a derivation:
 
 ```bash
 $ nix run github:alexghr/corepack.nix#pnpm -- --version
-7.22.0
+8.0.0
 $ nix run github:alexghr/corepack.nix#yarn -- --version
 1.22.19
 ```
 
-## Run one-off `pnpx` scripts
+Use these for one-off commands that you might need to run. This are fixed
+versions of package managers and won't respect the `packageManager` field in
+`package.json`.
+
+Update versions in [gen-src.bash](./gen-src.bash).
+
+### pnpx
 
 This repo also exports the pnpx tool. You can use it to run one-off download-and-execute scripts through pnpm:
 
 ```bash
 $ nix run github:alexghr/corepack.nix#pnpx -- create-react-app ./todo-mvc
-Creating a new React app in
+Creating a new React app in ...
 ```
 
-## Version management
+## `package.json` version management
 
-Corepack does version management via an entry in `package.json`:
+The default package observes version management through the `packageManager`
+field in `package.json`:
 
-```json
+```bash
+$ nix shell github:alexghr/corepack.nix
+$ cat package.json
+{
   "name": "test",
   "version": "1.0.0",
   "packageManager": "pnpm@7.30.3"
+}
+$ pnpm --version
+7.30.3
 ```
 
-Corepack will automatically download pnpm v7.30.3 the first time any `pnpm` command is used.
+These versioned package managers are stored in [`$COREPACK_HOME`](https://github.com/nodejs/corepack#environment-variables).
+It defaults to `~/.cache/node/corepack`.
 
 [Corepack]: https://nodejs.org/api/corepack.html
