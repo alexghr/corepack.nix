@@ -13,6 +13,7 @@
     COREPACK_HOME="$out/corepack";
     COREPACK_ENABLE_NETWORK = "0";
     COREPACK_ENABLE_PROJECT_SPEC = "0";
+    COREPACK_ENABLE_STRICT = "0";
 
     unpackPhase = ''
       mkdir -p "${COREPACK_HOME}"
@@ -34,7 +35,8 @@
         wrapProgram $file \
           --set COREPACK_HOME "${COREPACK_HOME}" \
           --set COREPACK_ENABLE_NETWORK "${COREPACK_ENABLE_NETWORK}" \
-          --set COREPACK_ENABLE_PROJECT_SPEC "${COREPACK_ENABLE_PROJECT_SPEC}"
+          --set COREPACK_ENABLE_PROJECT_SPEC "${COREPACK_ENABLE_PROJECT_SPEC}" \
+          --set COREPACK_ENABLE_STRICT "${COREPACK_ENABLE_STRICT}"
       done
     '';
   };
