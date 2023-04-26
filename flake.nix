@@ -5,7 +5,21 @@
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+    {
+      overlays = {
+        corepack = final: prev: {
+          corepack = self.packages.${prev.system}.corepack;
+        };
+        yarn = final: prev: {
+          yarn = self.packages.${prev.system}.yarn;
+        };
+        pnpm = final: prev: {
+          pnpm = self.packages.${prev.system}.pnpm;
+        };
+        default = self.overlays.corepack;
+      };
+    }
+    // flake-utils.lib.eachDefaultSystem (system:
       let
         src = import ./src.nix;
         pkgs = import nixpkgs { inherit system; };
