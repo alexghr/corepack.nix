@@ -2,7 +2,7 @@
 
 set -eu -o pipefail
 
-PNPM_VERSION="8.3.1"
+PNPM_VERSION="8.4.0"
 YARN_VERSION="1.22.19"
 
 corepack prepare pnpm@$PNPM_VERSION yarn@$YARN_VERSION --output=corepack.tgz > /dev/null 2>&1
