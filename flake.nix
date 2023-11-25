@@ -1,7 +1,7 @@
 {
   description = "Enable NodeJS corepack";
 
-  inputs.nixpkgs.url = "nixpkgs/release-22.11";
+  inputs.nixpkgs.url = "nixpkgs/nixpkgs-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils }:
