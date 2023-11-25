@@ -7,14 +7,14 @@
   outputs = { self, nixpkgs, flake-utils }:
     {
       overlays = {
-        corepack = final: prev: {
-          corepack = self.packages.${prev.system}.corepack;
-        };
         yarn = final: prev: {
           yarn = self.packages.${prev.system}.yarn;
         };
         pnpm = final: prev: {
           pnpm = self.packages.${prev.system}.pnpm;
+        };
+        corepack = final: prev: {
+          corepack = self.packages.${prev.system}.corepack;
         };
         default = self.overlays.corepack;
       };
@@ -22,27 +22,29 @@
     // flake-utils.lib.eachDefaultSystem (system:
       let
         src = import ./src.nix;
-        pkgs = import nixpkgs { inherit system; };
-        corepack = import ./corepack.nix { inherit pkgs; };
-        fixedCorepack = corepack.fixedCorepack src.archive;
+        pkgs = nixpkgs.legacyPackages.${system};
+        corepack = pkgs.callPackage ./corepack.nix {};
+        shim = pkgs.callPackage ./shim.nix {};
       in rec {
-        packages.corepack = corepack.projectSpecCorepack;
-        packages.yarn = fixedCorepack.overrideAttrs (finalAttrs: prevAttrs: {
+        packages.yarn = shim.overrideAttrs (finalAttrs: prevAttrs: {
           name = "yarn";
           version = src.yarn.version;
           meta.mainProgram = "yarn";
         });
-        packages.pnpm = fixedCorepack.overrideAttrs (finalAttrs: prevAttrs: {
+
+        packages.pnpm = shim.overrideAttrs (finalAttrs: prevAttrs: {
           name = "pnpm";
           version = src.pnpm.version;
           meta.mainProgram = "pnpm";
         });
-        packages.pnpx = fixedCorepack.overrideAttrs (finalAttrs: prevAttrs: {
+
+        packages.pnpx = shim.overrideAttrs (finalAttrs: prevAttrs: {
           name = "pnpx";
           version = src.pnpm.version;
           meta.mainProgram = "pnpx";
         });
 
+        packages.corepack = corepack;
         packages.default = packages.corepack;
       }
     );
